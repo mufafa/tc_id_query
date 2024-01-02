@@ -1,5 +1,5 @@
 [package]
-name = "tc_id_query"
+name = "TC-Id-Generator"
 authors = ["Mustafa Öksüz <mus.oks(at)gmail.com>"]
 version = "0.1.0"
 edition = "2021"
