@@ -23,6 +23,6 @@ jobs:
     - name: Artifact
       uses: actions/upload-artifact@v3
       with:
-          name: AppBundler
+          name: TC-ID-Generator
           path: ./target/release/TC-Id-Generator
       
