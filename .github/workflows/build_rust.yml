@@ -1,4 +1,38 @@
-name: Rust on MacOS
+# name: Rust on MacOS
+
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
+# env:
+#   CARGO_TERM_COLOR: always
+
+# jobs:
+#   build:
+#     strategy:
+#       matrix:
+#         # os: [macos-latest]
+#         os: [ubuntu-latest, windows-lates, macos-latest]
+#         # version: [10, 12, 14]
+#     runs-on: ${{ matrix.os }}
+#     # runs-on: macos-latest
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Build
+#       run: cargo build --release
+    
+    
+#     - name: Artifact
+#       uses: actions/upload-artifact@v4
+#       with:
+#           name: TC-ID-Generator
+#           path: ./target/release/TC-Id-Generator-${{ matrix.os }}
+
+
+name: Rust Build and Release
 
 on:
   push:
@@ -13,21 +47,32 @@ jobs:
   build:
     strategy:
       matrix:
-        # os: [macos-latest]
-        os: [ubuntu-latest, windows-lates, macos-latest]
-        # version: [10, 12, 14]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    # runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
     - name: Build
       run: cargo build --release
-    
-    
-    - name: Artifact
+
+    - name: Determine Artifact Name and Path
+      id: artifact_setup
+      run: |
+        ARTIFACT_NAME="release_name-${{ runner.os }}"
+        BINARY_PATH="./target/release/TC-Id-Generator"
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          BINARY_PATH="$BINARY_PATH.exe"
+        fi
+        echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+        echo "BINARY_PATH=$BINARY_PATH" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-          name: TC-ID-Generator
-          path: ./target/release/TC-Id-Generator-${{ matrix.os }}
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ env.BINARY_PATH }}
+
       
